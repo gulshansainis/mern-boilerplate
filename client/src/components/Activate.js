@@ -71,7 +71,7 @@ const Activate = ({ match, history }) => {
               history.push("/signin");
             }}
           >
-            Signin
+            Sign In
           </Link>
         )}
       </div>

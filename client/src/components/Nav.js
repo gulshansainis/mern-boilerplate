@@ -15,12 +15,12 @@ const Nav = ({ history }) => {
           <>
             <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
               <NavLink exact={true} activeClassName="active" to="/signup">
-                Signup
+                Sign Up
               </NavLink>
             </li>
             <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
               <NavLink exact={true} activeClassName="active" to="/signin">
-                Signin
+                Sign In
               </NavLink>
             </li>
           </>

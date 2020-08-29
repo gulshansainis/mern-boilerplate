@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import { Link } from "react-router-dom";
 
 const Forgot = ({ history }) => {
   const [values, setValues] = useState({
@@ -78,6 +79,12 @@ const Forgot = ({ history }) => {
             >
               {buttonText}
             </button>
+            <Link
+              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              to="/signin"
+            >
+              Sign In
+            </Link>
           </div>
         </form>
       </div>

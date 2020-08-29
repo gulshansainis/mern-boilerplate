@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -71,7 +71,7 @@ const Signin = ({ history }) => {
           className="p-10 m-48 w-1/2 bg-white shadow-lg rounded"
           onSubmit={handleSubmit}
         >
-          <h1 className="text-5xl mb-8 text-center">Signin</h1>
+          <h1 className="text-5xl mb-8 text-center">Sign In</h1>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -118,6 +118,18 @@ const Signin = ({ history }) => {
             >
               {buttonText}
             </button>
+            <Link
+              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              to="/signup"
+            >
+              Sign Up
+            </Link>
+            <Link
+              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              to="/auth/password/forgot"
+            >
+              Forgot Password?
+            </Link>
           </div>
         </form>
       </div>
