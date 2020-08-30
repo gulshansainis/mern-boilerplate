@@ -5,6 +5,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { authenticate, isAuth } from "../utility/helpers";
+import Google from "./Google";
 
 const Signin = ({ history }) => {
   const [values, setValues] = useState({
@@ -23,6 +24,14 @@ const Signin = ({ history }) => {
     setValues({
       ...values,
       [name]: value,
+    });
+  };
+
+  const handleGoogleLogin = (response) => {
+    authenticate(response, () => {
+      isAuth() && isAuth().role === "admin"
+        ? history.push("/admin")
+        : history.push("/private");
     });
   };
 
@@ -131,6 +140,7 @@ const Signin = ({ history }) => {
               Forgot Password?
             </Link>
           </div>
+          <Google handleGoogleLogin={handleGoogleLogin} />
         </form>
       </div>
     </Layout>

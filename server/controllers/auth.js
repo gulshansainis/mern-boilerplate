@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const mail = require("@sendgrid/mail");
 const expressJwt = require("express-jwt");
 const _ = require("lodash");
+const { OAuth2Client } = require("google-auth-library");
+const { use } = require("../routes/auth");
 
 mail.setApiKey(process.env.SENDGRID_API_KEY);
 /*
@@ -292,4 +294,61 @@ exports.resetPassword = (req, res) => {
       });
     });
   }
+};
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+exports.googleLogin = (req, res) => {
+  const { idToken } = req.body;
+  client
+    .verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID })
+    .then((response) => {
+      console.log(`Google login response ${response}`);
+      const { email_verified, name, email } = response.payload;
+      if (email_verified) {
+        User.findOne({ email }).exec((err, user) => {
+          // user found -> generate token
+          if (user) {
+            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+              expiresIn: "7d",
+            });
+            const { _id, email, name, role } = user;
+            return res.json({
+              token,
+              user: { _id, email, name, role },
+            });
+          }
+          // user not found  in database
+          else {
+            let password = email + process.env.JWT_SECRET;
+            user = new User({ name, email, password });
+            user.save((err, data) => {
+              if (err) {
+                console.log(`Error google login on user save ${err}`);
+                return res
+                  .status(400)
+                  .json({ error: "User signup failed with google" });
+              }
+
+              const token = jwt.sign(
+                { _id: data._id },
+                process.env.JWT_SECRET,
+                {
+                  expiresIn: "7d",
+                }
+              );
+              const { _id, email, name, role } = user;
+              return res.json({
+                token,
+                user: { _id, email, name, role },
+              });
+            });
+          }
+        });
+      } else {
+        return res
+          .status(400)
+          .json({ error: "Google login failed - please try again" });
+      }
+    });
 };
