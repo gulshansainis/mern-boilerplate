@@ -4,6 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { isAuth, getCookie, signout, updateUser } from "../utility/helpers";
+import FormContainer from "./FormContainer";
 
 const Admin = ({ history }) => {
   const [values, setValues] = useState({
@@ -91,11 +92,8 @@ const Admin = ({ history }) => {
   return (
     <Layout>
       <ToastContainer />
-      <div className="container m-auto flex justify-center items-center">
-        <form
-          className="p-10 m-48 w-1/2 bg-white shadow-lg rounded"
-          onSubmit={handleSubmit}
-        >
+      <FormContainer>
+        <form onSubmit={handleSubmit}>
           <h1 className="text-3xl mb-4 text-center">Admin Area</h1>
           <h3 className="mb-4 text-center">Edit Profile</h3>
           <div className="mb-4">
@@ -175,14 +173,14 @@ const Admin = ({ history }) => {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-brand bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               {buttonText}
             </button>
           </div>
         </form>
-      </div>
+      </FormContainer>
     </Layout>
   );
 };

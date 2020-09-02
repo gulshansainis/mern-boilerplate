@@ -4,6 +4,7 @@ import axios from "axios";
 import jwt from "jsonwebtoken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import FormContainer from "./FormContainer";
 
 const Reset = ({ match }) => {
   const [values, setValues] = useState({
@@ -56,7 +57,7 @@ const Reset = ({ match }) => {
   return (
     <Layout>
       <ToastContainer />
-      <div className="container m-auto flex justify-center items-center">
+      <FormContainer>
         <form
           className="p-10 m-48 w-1/2 bg-white shadow-lg rounded"
           onSubmit={handleSubmit}
@@ -84,14 +85,14 @@ const Reset = ({ match }) => {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-brand bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               {buttonText}
             </button>
           </div>
         </form>
-      </div>
+      </FormContainer>
     </Layout>
   );
 };

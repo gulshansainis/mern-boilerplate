@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { authenticate, isAuth } from "../utility/helpers";
 import Google from "./Google";
+import FormContainer from "./FormContainer";
 
 const Signin = ({ history }) => {
   const [values, setValues] = useState({
@@ -75,11 +76,8 @@ const Signin = ({ history }) => {
     <Layout>
       <ToastContainer />
       {isAuth() ? <Redirect to="/" /> : null}
-      <div className="container m-auto flex justify-center items-center">
-        <form
-          className="p-10 m-48 w-1/2 bg-white shadow-lg rounded"
-          onSubmit={handleSubmit}
-        >
+      <FormContainer>
+        <form onSubmit={handleSubmit}>
           <h1 className="text-5xl mb-8 text-center">Sign In</h1>
           <div className="mb-4">
             <label
@@ -122,27 +120,29 @@ const Signin = ({ history }) => {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-brand hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               {buttonText}
             </button>
-            <Link
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              to="/signup"
-            >
-              Sign Up
-            </Link>
-            <Link
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              to="/auth/password/forgot"
-            >
-              Forgot Password?
-            </Link>
+            <div className="flex flex-col">
+              <Link
+                className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
+                to="/signup"
+              >
+                Sign Up
+              </Link>
+              <Link
+                className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
+                to="/auth/password/forgot"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </div>
           <Google handleGoogleLogin={handleGoogleLogin} />
         </form>
-      </div>
+      </FormContainer>
     </Layout>
   );
 };

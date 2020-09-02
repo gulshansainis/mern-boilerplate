@@ -4,52 +4,59 @@ import { isAuth, signout } from "../utility/helpers";
 
 const Nav = ({ history }) => {
   return (
-    <nav className="shadow-lg">
-      <ul className="flex list-none bg-teal-400">
-        <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
-          <NavLink exact={true} activeClassName="active" to="/">
-            Home
+    <nav className="py-2 md:container mx-auto">
+      <ul className="flex md:mx-10 sm:mx-0 my-4 items-center">
+        <li className="flex-1">
+          <NavLink className="py-3 font-bold text-2xl" exact={true} to="/">
+            Chatters.co
           </NavLink>
         </li>
         {!isAuth() && (
           <>
-            <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
-              <NavLink exact={true} activeClassName="active" to="/signup">
-                Sign Up
+            <li className="invisible sm:visible">
+              <NavLink className="px-2 py-3" exact={true} to="/signin">
+                Sign In
               </NavLink>
             </li>
-            <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
-              <NavLink exact={true} activeClassName="active" to="/signin">
-                Sign In
+            <li className="invisible sm:visible">
+              <NavLink
+                className="px-2 py-3 bg-blue-brand rounded text-white font-bold"
+                exact={true}
+                to="/signup"
+              >
+                Sign Up
               </NavLink>
             </li>
           </>
         )}
         {isAuth() && isAuth().role === "admin" && (
-          <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
-            <NavLink exact={true} activeClassName="active" to="/admin">
+          <li>
+            <NavLink className="px-2 py-3" exact={true} to="/admin">
               {isAuth().name}
             </NavLink>
           </li>
         )}
         {isAuth() && isAuth().role !== "admin" && (
-          <li className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500">
-            <NavLink exact={true} activeClassName="active" to="/private">
+          <li>
+            <NavLink className="px-2 py-3" exact={true} to="/private">
               {isAuth().name}
             </NavLink>
           </li>
         )}
         {isAuth() && (
-          <li
-            className="text-2xl p-2 cursor-pointer hover:text-white hover:bg-teal-500"
-            onClick={() => {
-              signout(() => {
-                console.log("Signout success");
-                history.push("/");
-              });
-            }}
-          >
-            Signout
+          <li>
+            <a
+              className="px-2 py-3 bg-blue-brand rounded text-white font-bold"
+              href="#"
+              onClick={() => {
+                signout((e) => {
+                  console.log("Signout success");
+                  history.push("/");
+                });
+              }}
+            >
+              Sign Out
+            </a>
           </li>
         )}
       </ul>

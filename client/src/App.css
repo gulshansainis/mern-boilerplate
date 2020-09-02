@@ -1,4 +1,8 @@
-nav > ul > li > a.active {
-  color: white;
-  cursor: pointer;
+.bg-blue-brand {
+  background-color: #007aff;
+}
+
+.hero {
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
 }
