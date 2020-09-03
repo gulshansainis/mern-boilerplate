@@ -22,8 +22,18 @@ router.post("/signup", userSignupValidator, runValidation, signup);
 router.post("/signin", userSigninValidator, runValidation, signin);
 router.post("/account-activation", accountActivation);
 
-router.put("/forgot-password", forgotPasswordValidator, forgotPassword);
-router.put("/reset-password", resetPasswordValidator, resetPassword);
+router.put(
+  "/forgot-password",
+  forgotPasswordValidator,
+  runValidation,
+  forgotPassword
+);
+router.put(
+  "/reset-password",
+  resetPasswordValidator,
+  runValidation,
+  resetPassword
+);
 
 router.post("/google-login", googleLogin);
 
