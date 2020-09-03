@@ -11,11 +11,12 @@ const Admin = ({ history }) => {
     role: "",
     name: "",
     email: "",
+    org_email: "",
     password: "",
     buttonText: "Submit",
   });
 
-  const { role, name, email, password, buttonText } = values;
+  const { role, name, email, org_email, password, buttonText } = values;
   const token = getCookie("token");
 
   useEffect(() => {
@@ -32,12 +33,13 @@ const Admin = ({ history }) => {
     })
       .then((response) => {
         console.log(`Profile fetch ${JSON.stringify(response.data)}`);
-        const { role, name, email } = response.data;
+        const { role, name, email, org_email } = response.data;
         setValues({
           ...values,
           role,
           name,
           email,
+          org_email,
         });
       })
       .catch((error) => {
@@ -53,10 +55,10 @@ const Admin = ({ history }) => {
   return (
     <Layout>
       <ToastContainer />
-      <FormContainer>
-        <h1 className="text-center text-3xl">ADMIN AREA</h1>
-        <pre>{JSON.stringify(values, null, 2)}</pre>
-      </FormContainer>
+      {/* <FormContainer> */}
+      <h1 className="text-center text-3xl">ADMIN AREA</h1>
+      <pre>{JSON.stringify(values, null, 2)}</pre>
+      {/* </FormContainer> */}
     </Layout>
   );
 };

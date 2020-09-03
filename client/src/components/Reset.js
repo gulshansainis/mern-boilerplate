@@ -58,10 +58,7 @@ const Reset = ({ match }) => {
     <Layout>
       <ToastContainer />
       <FormContainer>
-        <form
-          className="p-10 m-48 w-1/2 bg-white shadow-lg rounded"
-          onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <h1 className="text-5xl mb-8 text-center">Hey {name}</h1>
           <h2 className="text-2xl mb-8 text-center">Reset Password</h2>
           <div className="mb-4">

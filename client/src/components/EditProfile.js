@@ -11,12 +11,12 @@ const EditProfile = ({ history }) => {
     role: "",
     name: "",
     email: "",
-    orgEmail: "",
+    org_email: "",
     password: "",
     buttonText: "Submit",
   });
 
-  const { role, name, email, orgEmail, password, buttonText } = values;
+  const { role, name, email, org_email, password, buttonText } = values;
   const token = getCookie("token");
 
   useEffect(() => {
@@ -33,13 +33,13 @@ const EditProfile = ({ history }) => {
     })
       .then((response) => {
         console.log(`Profile fetch ${JSON.stringify(response.data)}`);
-        const { role, name, email, orgEmail } = response.data;
+        const { role, name, email, org_email } = response.data;
         setValues({
           ...values,
           role,
           name,
           email,
-          orgEmail,
+          org_email,
         });
       })
       .catch((error) => {
@@ -71,7 +71,7 @@ const EditProfile = ({ history }) => {
       url: `${process.env.REACT_APP_API}/${
         role === "admin" ? "admin" : "user"
       }/update`,
-      data: { name, password, orgEmail },
+      data: { name, password, org_email },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -158,18 +158,18 @@ const EditProfile = ({ history }) => {
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="orgEmail"
+              htmlFor="org_email"
             >
               Organisation Email
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="orgEmail"
-              name="orgEmail"
+              id="org_email"
+              name="org_email"
               autoComplete="off"
               type="email"
               placeholder="Organisation Email"
-              value={orgEmail}
+              value={org_email}
               onChange={handleChange}
               required
             />

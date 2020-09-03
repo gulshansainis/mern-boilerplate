@@ -11,12 +11,12 @@ const User = ({ history }) => {
     role: "",
     name: "",
     email: "",
-    orgEmail: "",
+    org_email: "",
     password: "",
     buttonText: "Submit",
   });
 
-  const { role, name, email, orgEmail, password, buttonText } = values;
+  const { role, name, email, org_email, password, buttonText } = values;
   const token = getCookie("token");
 
   useEffect(() => {
@@ -33,13 +33,13 @@ const User = ({ history }) => {
     })
       .then((response) => {
         console.log(`Profile fetch ${JSON.stringify(response.data)}`);
-        const { role, name, email, orgEmail } = response.data;
+        const { role, name, email, org_email } = response.data;
         setValues({
           ...values,
           role,
           name,
           email,
-          orgEmail,
+          org_email,
         });
       })
       .catch((error) => {

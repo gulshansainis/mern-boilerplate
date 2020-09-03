@@ -31,8 +31,8 @@ const Signin = ({ history }) => {
   const handleGoogleLogin = (response) => {
     authenticate(response, () => {
       isAuth() && isAuth().role === "admin"
-        ? history.push("/edit/profile")
-        : history.push("/edit/profile");
+        ? history.push("/admin")
+        : history.push("/");
     });
   };
 
@@ -55,8 +55,8 @@ const Signin = ({ history }) => {
           });
           toast.success(`Welcome ${response.data.user.name}`);
           isAuth() && isAuth().role === "admin"
-            ? history.push("/edit/profile")
-            : history.push("/edit/profile");
+            ? history.push("/admin")
+            : history.push("/");
         });
       })
       .catch((error) => {

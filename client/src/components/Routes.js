@@ -11,6 +11,7 @@ import Forgot from "./Forgot";
 import Reset from "./Reset";
 import EditProfile from "./EditProfile";
 import User from "./User";
+import OrgActivate from "./OrgActivate";
 
 const Routes = () => {
   return (
@@ -22,6 +23,7 @@ const Routes = () => {
         <Route path="/auth/activate/:token" exact component={Activate} />
         <Route path="/auth/password/forgot" exact component={Forgot} />
         <Route path="/auth/password/reset/:token" exact component={Reset} />
+        <Route path="/org/activate/:token" exact component={OrgActivate} />
         <PrivateRoute path="/edit/profile" exact component={EditProfile} />
         <PrivateRoute path="/user" exact component={User} />
         <AdminRoute path="/admin" exact component={Admin} />

@@ -29,11 +29,11 @@ const Signup = ({ history }) => {
     });
   };
 
-  const handleGoogleLogin = (response) => {
+  const handleGoogleSignup = (response) => {
     authenticate(response, () => {
       isAuth() && isAuth().role === "admin"
-        ? history.push("/edit/profile")
-        : history.push("/edit/profile");
+        ? history.push("/admin")
+        : history.push("/");
     });
   };
 
@@ -150,7 +150,7 @@ const Signup = ({ history }) => {
             </div>
           </div>
           <Google
-            handleGoogleLogin={handleGoogleLogin}
+            handleGoogleLogin={handleGoogleSignup}
             buttonText="Sign Up with Google"
           />
         </form>
