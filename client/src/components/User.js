@@ -6,16 +6,17 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { isAuth, getCookie, signout, updateUser } from "../utility/helpers";
 import FormContainer from "./FormContainer";
 
-const Admin = ({ history }) => {
+const User = ({ history }) => {
   const [values, setValues] = useState({
     role: "",
     name: "",
     email: "",
+    orgEmail: "",
     password: "",
     buttonText: "Submit",
   });
 
-  const { role, name, email, password, buttonText } = values;
+  const { role, name, email, orgEmail, password, buttonText } = values;
   const token = getCookie("token");
 
   useEffect(() => {
@@ -32,12 +33,13 @@ const Admin = ({ history }) => {
     })
       .then((response) => {
         console.log(`Profile fetch ${JSON.stringify(response.data)}`);
-        const { role, name, email } = response.data;
+        const { role, name, email, orgEmail } = response.data;
         setValues({
           ...values,
           role,
           name,
           email,
+          orgEmail,
         });
       })
       .catch((error) => {
@@ -54,11 +56,11 @@ const Admin = ({ history }) => {
     <Layout>
       <ToastContainer />
       <FormContainer>
-        <h1 className="text-center text-3xl">ADMIN AREA</h1>
+        <h1 className="text-center text-3xl">USER AREA</h1>
         <pre>{JSON.stringify(values, null, 2)}</pre>
       </FormContainer>
     </Layout>
   );
 };
 
-export default Admin;
+export default User;

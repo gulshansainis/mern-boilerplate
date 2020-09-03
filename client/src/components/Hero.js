@@ -6,7 +6,7 @@ const Hero = () => {
     <div className="flex w-full h-full relative justify-center">
       <div
         className="z-10 hero w-full h-full bg-cover bg-center absolute"
-        style={{ "background-image": "url(hero.jpg)" }}
+        style={{ backgroundImage: "url(hero.jpg)" }}
       ></div>
       <div className="flex flex-col self-center content-center z-10">
         <h1 className="text-6xl bg-gray-800 p-12 text-white rounded-md shadow-2xl mb-24 md:text-5xl">

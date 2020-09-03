@@ -15,7 +15,7 @@ exports.read = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const { name, password } = req.body;
+  const { name, orgEmail, password } = req.body;
 
   User.findById(req.user._id).exec((error, user) => {
     if (error || !user) {
@@ -30,6 +30,14 @@ exports.update = (req, res) => {
       });
     } else {
       user.name = name;
+    }
+
+    if (!orgEmail) {
+      return res.status(400).json({
+        error: "Organisation email is required",
+      });
+    } else {
+      user.orgEmail = orgEmail;
     }
 
     if (password) {

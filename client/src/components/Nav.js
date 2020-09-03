@@ -38,7 +38,7 @@ const Nav = ({ history }) => {
         )}
         {isAuth() && isAuth().role !== "admin" && (
           <li>
-            <NavLink className="px-2 py-3" exact={true} to="/private">
+            <NavLink className="px-2 py-3" exact={true} to="/user">
               {isAuth().name}
             </NavLink>
           </li>

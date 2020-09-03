@@ -6,16 +6,17 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { isAuth, getCookie, signout, updateUser } from "../utility/helpers";
 import FormContainer from "./FormContainer";
 
-const Private = ({ history }) => {
+const EditProfile = ({ history }) => {
   const [values, setValues] = useState({
     role: "",
     name: "",
     email: "",
+    orgEmail: "",
     password: "",
     buttonText: "Submit",
   });
 
-  const { role, name, email, password, buttonText } = values;
+  const { role, name, email, orgEmail, password, buttonText } = values;
   const token = getCookie("token");
 
   useEffect(() => {
@@ -32,12 +33,13 @@ const Private = ({ history }) => {
     })
       .then((response) => {
         console.log(`Profile fetch ${JSON.stringify(response.data)}`);
-        const { role, name, email } = response.data;
+        const { role, name, email, orgEmail } = response.data;
         setValues({
           ...values,
           role,
           name,
           email,
+          orgEmail,
         });
       })
       .catch((error) => {
@@ -66,8 +68,10 @@ const Private = ({ history }) => {
     setValues({ ...values, buttonText: "Submitting" });
     axios({
       method: "PUT",
-      url: `${process.env.REACT_APP_API}/user/update`,
-      data: { name, password },
+      url: `${process.env.REACT_APP_API}/${
+        role === "admin" ? "admin" : "user"
+      }/update`,
+      data: { name, password, orgEmail },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -94,8 +98,9 @@ const Private = ({ history }) => {
       <ToastContainer />
       <FormContainer>
         <form onSubmit={handleSubmit}>
-          <h1 className="text-3xl mb-4 text-center">User Area</h1>
-          <h3 className="mb-4 text-center">Edit Profile</h3>
+          <h1 className="text-2xl mb-2 text-center">
+            {role === "admin" ? "Admin" : "User"} Area/ Edit Profile
+          </h1>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -135,7 +140,7 @@ const Private = ({ history }) => {
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="name"
+              htmlFor="email"
             >
               Email
             </label>
@@ -149,6 +154,28 @@ const Private = ({ history }) => {
               value={email}
               disabled
             />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="orgEmail"
+            >
+              Organisation Email
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              id="orgEmail"
+              name="orgEmail"
+              autoComplete="off"
+              type="email"
+              placeholder="Organisation Email"
+              value={orgEmail}
+              onChange={handleChange}
+              required
+            />
+            <p className="text-gray-600 text-xs italic">
+              Required to connect organisation participants
+            </p>
           </div>
           <div className="mb-6">
             <label
@@ -167,9 +194,6 @@ const Private = ({ history }) => {
               value={password}
               onChange={handleChange}
             />
-            {/* <p className="text-red-500 text-xs italic">
-            Please choose a password.
-          </p> */}
           </div>
           <div className="flex items-center justify-between">
             <button
@@ -185,4 +209,4 @@ const Private = ({ history }) => {
   );
 };
 
-export default Private;
+export default EditProfile;

@@ -4,10 +4,11 @@ import Layout from "../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { isAuth } from "../utility/helpers";
+import { authenticate, isAuth } from "../utility/helpers";
 import FormContainer from "./FormContainer";
+import Google from "./Google";
 
-const Signup = () => {
+const Signup = ({ history }) => {
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -25,6 +26,14 @@ const Signup = () => {
     setValues({
       ...values,
       [name]: value,
+    });
+  };
+
+  const handleGoogleLogin = (response) => {
+    authenticate(response, () => {
+      isAuth() && isAuth().role === "admin"
+        ? history.push("/edit/profile")
+        : history.push("/edit/profile");
     });
   };
 
@@ -140,6 +149,10 @@ const Signup = () => {
               </Link>
             </div>
           </div>
+          <Google
+            handleGoogleLogin={handleGoogleLogin}
+            buttonText="Sign Up with Google"
+          />
         </form>
       </FormContainer>
     </Layout>

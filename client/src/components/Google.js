@@ -2,7 +2,7 @@ import React from "react";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
 
-const Google = ({ handleGoogleLogin }) => {
+const Google = ({ handleGoogleLogin, buttonText = "Login with Google" }) => {
   const responseGoogle = (response) => {
     axios({
       method: "POST",
@@ -24,7 +24,7 @@ const Google = ({ handleGoogleLogin }) => {
       <GoogleLogin
         className="w-full"
         clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
-        buttonText="Login with Google"
+        buttonText={buttonText}
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
         cookiePolicy={"single_host_origin"}
