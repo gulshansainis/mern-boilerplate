@@ -17,11 +17,14 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    orgEmail: {
+    org_email: {
       type: String,
       trim: true,
-      // required: true,
-      unique: true,
+      lowercase: true,
+    },
+    org_email_domain: {
+      type: String,
+      trim: true,
       lowercase: true,
     },
     hashed_password: {
@@ -32,6 +35,11 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "subscriber",
+    },
+    status: {
+      type: String,
+      default: "disabled",
+      required: true,
     },
     resetPasswordLink: {
       data: String,

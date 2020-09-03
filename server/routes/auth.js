@@ -17,6 +17,7 @@ const {
 } = require("../validators/auth");
 const { runValidation } = require("../validators");
 
+// ROUTES
 router.post("/signup", userSignupValidator, runValidation, signup);
 router.post("/signin", userSigninValidator, runValidation, signin);
 router.post("/account-activation", accountActivation);

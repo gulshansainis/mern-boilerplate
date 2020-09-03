@@ -1,7 +1,7 @@
 const { check } = require("express-validator");
 
 exports.userSignupValidator = [
-  check("name").not().isEmpty().withMessage("Name is required"),
+  check("name").notEmpty().withMessage("Name is required"),
   check("email").isEmail().withMessage("Valid email is required"),
   check("password")
     .isLength({ min: 6 })
@@ -9,6 +9,7 @@ exports.userSignupValidator = [
 ];
 
 exports.userSigninValidator = [
+  check("email").notEmpty().withMessage("Email is required"),
   check("email").isEmail().withMessage("Valid email is required"),
   check("password")
     .isLength({ min: 6 })
@@ -16,7 +17,8 @@ exports.userSigninValidator = [
 ];
 
 exports.forgotPasswordValidator = [
-  check("email").notEmpty().isEmail().withMessage("Valid email is required"),
+  check("email").notEmpty().withMessage("Email is required"),
+  check("email").isEmail().withMessage("Valid email is required"),
 ];
 
 exports.resetPasswordValidator = [
