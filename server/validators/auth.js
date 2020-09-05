@@ -3,9 +3,6 @@ const { check } = require("express-validator");
 exports.userSignupValidator = [
   check("name").notEmpty().withMessage("Name is required"),
   check("email").isEmail().withMessage("Valid email is required"),
-  check("email")
-    .matches(/gmail\.com/)
-    .withMessage("Valid Gmail id is required"),
   check("password")
     .isLength({ min: 6 })
     .withMessage("Password must be atleast 6 characters long"),
@@ -14,18 +11,12 @@ exports.userSignupValidator = [
 exports.userSigninValidator = [
   check("email").notEmpty().withMessage("Email is required"),
   check("email").isEmail().withMessage("Valid email is required"),
-  check("email")
-    .matches(/gmail\.com/)
-    .withMessage("Valid Gmail id is required"),
   check("password")
     .isLength({ min: 6 })
     .withMessage("Password must be atleast 6 characters long"),
 ];
 
 exports.forgotPasswordValidator = [
-  check("email")
-    .matches(/gmail\.com/)
-    .withMessage("Valid Gmail id is required"),
   check("email").notEmpty().withMessage("Email is required"),
   check("email").isEmail().withMessage("Valid email is required"),
 ];

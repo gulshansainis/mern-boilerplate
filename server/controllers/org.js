@@ -211,6 +211,7 @@ exports.accountActivation = (req, res) => {
         let user = new User({
           name: primary_contact_name,
           email: primary_contact_email,
+          org_email: primary_contact_email,
           password,
           role,
           status: "active",
