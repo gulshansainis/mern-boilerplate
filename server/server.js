@@ -16,7 +16,7 @@ mongoose
     useFindAndModify: false,
     useCreateIndex: true,
   })
-  .then(() => console.log("databse connected"))
+  .then(() => console.log("database connected"))
   .catch((error) => console.log(error));
 
 // middlewares
@@ -27,6 +27,11 @@ app.use(bodyParser.json());
 // routes
 app.use("/api", require("./routes"));
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server started at ${port}`);
 });
+
+module.exports = {
+  server,
+  mongoose,
+};
