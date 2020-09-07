@@ -20,6 +20,7 @@ const EditProfile = ({ history }) => {
   const token = getCookie("token");
 
   useEffect(() => {
+    if (!isAuth()) return;
     loadProfile();
   }, []);
 
@@ -88,7 +89,7 @@ const EditProfile = ({ history }) => {
       })
       .catch((error) => {
         console.log(`Profile update failed`, error.response.data);
-        setValues({ ...values });
+        setValues({ ...values, password: "", org_email: "" });
         toast.error(error.response.data.error);
       });
   };
@@ -101,6 +102,13 @@ const EditProfile = ({ history }) => {
           <h1 className="text-2xl mb-2 text-center">
             {role === "admin" ? "Admin" : "User"} Area/ Edit Profile
           </h1>
+          {!org_email ? (
+            <p className="text-red-400 text-center">
+              Please complete required fields
+            </p>
+          ) : (
+            ""
+          )}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -124,7 +132,7 @@ const EditProfile = ({ history }) => {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="name"
             >
-              Name <span class="text-red-400">*</span>
+              Name <span className="text-red-400">*</span>
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
@@ -161,7 +169,7 @@ const EditProfile = ({ history }) => {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="org_email"
             >
-              Organisation Email <span class="text-red-400">*</span>
+              Organisation Email <span className="text-red-400">*</span>
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -174,7 +182,11 @@ const EditProfile = ({ history }) => {
               onChange={handleChange}
               required
             />
-            <p className="text-gray-600 text-xs italic">
+            <p
+              className={`text-gray-600 text-xs italic ${
+                !org_email ? "text-red-400" : ""
+              }`}
+            >
               Required to connect organisation participants
             </p>
           </div>
