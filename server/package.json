@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon",
-    "test": "jest --testEnvironment=node --maxWorkers=1 --collect-coverage",
-    "test:watch": "jest --watch --testEnvironment=node --maxWorkers=1"
+    "test": "jest --silent --testEnvironment=node --maxWorkers=1 --collect-coverage",
+    "test:watch": "jest  --silent --watch --testEnvironment=node --maxWorkers=1"
   },
   "keywords": [],
   "author": "",

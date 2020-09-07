@@ -22,8 +22,8 @@ exports.forgotPasswordValidator = [
 ];
 
 exports.resetPasswordValidator = [
+  check("resetPasswordLink").notEmpty().withMessage("Token missing in request"),
   check("newPassword")
     .notEmpty()
-    .isLength({ min: 6 })
-    .withMessage("Password must be atleast 6 characters long"),
+    .withMessage("New password must be atleast 6 characters long"),
 ];

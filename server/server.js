@@ -3,14 +3,14 @@ const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const chatServer = require("./chatServer");
+const { startChatServer, stopChatServer } = require("./chatServer");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 8000;
 const chatPort = process.env.CHAT_PORT || 8001;
 // start chat server
-chatServer.start(app, chatPort);
+startChatServer(app, chatPort);
 
 // connect to database
 mongoose
@@ -39,7 +39,22 @@ const server = app.listen(port, () => {
   console.log(`Server started at ${port}`);
 });
 
+// stop server gracefully
+process.on("SIGTERM", shutDown);
+process.on("SIGINT", shutDown);
+
+function shutDown() {
+  // first stop chat server
+  stopChatServer();
+  // next stop server
+  server.close(() => {
+    console.log("Stopping server");
+    process.exit(0);
+  });
+}
+
 module.exports = {
   server,
   mongoose,
+  stopChatServer,
 };

@@ -12,12 +12,13 @@ const { isAdmin, isAuthorised } = require("../controllers/auth");
 const {
   userRoleChangeValidator,
   userStatusChangeValidator,
+  orgSignupValidator,
 } = require("../validators/org");
 const router = express.Router();
 const { runValidation } = require("../validators");
 
 // ROUTES
-router.post("/org/signup", signup);
+router.post("/org/signup", orgSignupValidator, runValidation, signup);
 router.post("/org/account-activation", accountActivation);
 
 // user actions

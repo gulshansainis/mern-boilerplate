@@ -106,7 +106,6 @@ exports.accountActivation = (req, res) => {
 
 exports.signin = (req, res) => {
   const { email, password } = req.body;
-
   User.findOne({ email }).exec((err, user) => {
     // check user exist
     if (err || !user) {

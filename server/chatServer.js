@@ -1,6 +1,7 @@
 const Chat = require("./models/Chat");
+let chatServer = null;
 
-exports.start = (app, port) => {
+const startChatServer = (app, port) => {
   const http = require("http").createServer(app);
   const io = require("socket.io")(http);
   const User = require("./models/User");
@@ -75,7 +76,19 @@ exports.start = (app, port) => {
     });
   });
 
-  http.listen(port, () => {
+  chatServer = http.listen(port, () => {
     console.log(`chat server started on ${port}`);
   });
+};
+
+const stopChatServer = () => {
+  if (chatServer !== null) {
+    chatServer.close();
+    console.log("Stopped chat server");
+  }
+};
+
+module.exports = {
+  startChatServer,
+  stopChatServer,
 };
