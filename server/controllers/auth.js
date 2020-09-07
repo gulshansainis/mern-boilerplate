@@ -7,35 +7,6 @@ const { OAuth2Client } = require("google-auth-library");
 const { use } = require("../routes/auth");
 
 mail.setApiKey(process.env.SENDGRID_API_KEY);
-/*
-exports.signup = (req, res) => {
-  const { name, email, password } = req.body;
-
-  User.findOne({ email }).exec((err, user) => {
-    // user already exist
-    if (user) {
-      return res.status(400).json({
-        error: "Email is taken",
-      });
-    }
-
-    let newUser = new User({ name, email, password });
-
-    newUser.save((err, success) => {
-      if (err) {
-        console.log("Signup error", error);
-        return res.status(400).json({
-          error: err,
-        });
-      }
-
-      res.json({
-        message: "Signup success!!",
-      });
-    });
-  });
-};
-*/
 
 exports.signup = (req, res) => {
   const { name, email, password } = req.body;
@@ -106,7 +77,7 @@ exports.accountActivation = (req, res) => {
 
       const { name, email, password } = decoded;
 
-      let user = new User({ name, email, password });
+      let user = new User({ name, email, password, status: "active" });
 
       user.save((error, success) => {
         if (error) {
@@ -328,7 +299,7 @@ exports.googleLogin = (req, res) => {
           // user not found  in database
           else {
             let password = email + process.env.JWT_SECRET;
-            user = new User({ name, email, password });
+            user = new User({ name, email, password, status: "active" });
             user.save((err, data) => {
               if (err) {
                 console.log(`Error google login on user save ${err}`);

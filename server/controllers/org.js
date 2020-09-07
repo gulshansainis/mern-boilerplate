@@ -95,6 +95,43 @@ exports.changeRole = (req, res) => {
   });
 };
 
+exports.removeUser = (req, res) => {
+  const _id = req.params.id;
+
+  User.findOne({ _id }).exec((err, user) => {
+    // check user exist
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+
+    // TODO : move this to middlerware
+    // check if admin is of same org
+    if (req.profile.org_email_domain !== user.org_email_domain) {
+      return res.status(401).json({
+        error: "You are not authorised to perform this action",
+      });
+    }
+
+    // add reset password token in db
+    user.updateOne(
+      { status: "disabled", org_email: "", org_email_domain: "" },
+      (err, success) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Failed to remove user",
+          });
+        }
+
+        return res.json({
+          message: `User removed successfully`,
+        });
+      }
+    );
+  });
+};
+
 exports.signup = (req, res) => {
   const {
     org_name,

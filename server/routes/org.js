@@ -5,6 +5,7 @@ const {
   allUsers,
   changeStatus,
   changeRole,
+  removeUser,
 } = require("../controllers/org");
 const { isAdmin, isAuthorised } = require("../controllers/auth");
 const {
@@ -36,5 +37,6 @@ router.put(
   isAdmin,
   changeRole
 );
+router.put("/org/user/remove/:id", isAuthorised, isAdmin, removeUser);
 
 module.exports = router;
