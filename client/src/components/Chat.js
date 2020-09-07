@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import { isAuth } from "../utility/helpers";
-const ENDPOINT = "http://127.0.0.1:8001";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+const ENDPOINT = process.env.REACT_APP_CHAT_ENDPOINT;
 const socket = socketIOClient(ENDPOINT);
 
 const Chat = () => {
@@ -208,7 +209,9 @@ const Chat = () => {
             return (
               <div key={index} className="flex items-start mb-4 text-sm">
                 <img
-                  src="https://pbs.twimg.com/profile_images/1012717264108318722/9lP-d2yM_200x200.jpg"
+                  src={
+                    chat.from === currentUser._id ? "/user1.png" : "/user2.png"
+                  }
                   className="w-10 h-10 rounded mr-3"
                 />
                 <div className="flex-1 overflow-hidden">
@@ -218,7 +221,11 @@ const Chat = () => {
                         ? currentUser.name
                         : chatUser.name}
                     </span>{" "}
-                    <span className="text-grey text-xs">{chat.createdAt}</span>
+                    <span className="text-grey text-xs">
+                      {formatDistanceToNow(new Date(chat.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </span>
                   </div>
                   <p className="text-black leading-normal">{chat.message}</p>
                 </div>
