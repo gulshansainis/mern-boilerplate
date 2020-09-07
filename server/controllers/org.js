@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const mail = require("@sendgrid/mail");
 const _ = require("lodash");
 const User = require("../models/User");
-const { ROLES, STATUS } = require("../utilities/constants");
+const Chat = require("../models/Chat");
 
 mail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -130,6 +130,42 @@ exports.removeUser = (req, res) => {
       }
     );
   });
+};
+
+exports.chatHistory = async (req, res) => {
+  const { id1, id2 } = req.params;
+
+  const user1 = await User.findById(id1);
+  const user2 = await User.findById(id2);
+
+  // TODO : move this to middlerware
+  // check if admin is of same org
+  // and all user are of same organisation
+  console.log(
+    req.profile.org_email_domain === user1.org_email_domain &&
+      req.profile.org_email_domain === user2.org_email_domain
+  );
+  if (
+    req.profile.org_email_domain === user1.org_email_domain &&
+    req.profile.org_email_domain === user2.org_email_domain
+  ) {
+    // get unique id for chat
+    const uid = [id1, id2].sort().join("_");
+
+    Chat.find({ uid }).exec((err, chats) => {
+      // check user exist
+      if (err || !chats) {
+        return res.status(400).json({
+          error: "No chat history found",
+        });
+      }
+      return res.json(chats);
+    });
+  } else {
+    return res.status(401).json({
+      error: "You are not authorised to perform this action",
+    });
+  }
 };
 
 exports.signup = (req, res) => {

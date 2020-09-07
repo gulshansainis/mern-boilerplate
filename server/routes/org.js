@@ -6,6 +6,7 @@ const {
   changeStatus,
   changeRole,
   removeUser,
+  chatHistory,
 } = require("../controllers/org");
 const { isAdmin, isAuthorised } = require("../controllers/auth");
 const {
@@ -38,5 +39,6 @@ router.put(
   changeRole
 );
 router.put("/org/user/remove/:id", isAuthorised, isAdmin, removeUser);
+router.get("/org/user/chat/:id1/:id2", isAuthorised, isAdmin, chatHistory);
 
 module.exports = router;

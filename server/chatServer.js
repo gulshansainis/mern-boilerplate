@@ -40,7 +40,6 @@ exports.start = (app, port) => {
           console.log("Error saving chat", error);
         }
         Chat.find({ uid })
-          .sort({ date: -1 })
           .limit(20)
           .exec((error, messages) => {
             if (error) {
