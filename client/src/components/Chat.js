@@ -26,7 +26,6 @@ const Chat = () => {
 
     // listen for users from server
     socket.on("users", (socketUsers) => {
-      console.log(socketUsers);
       if (socketUsers.length === 0) return;
       // filter current user
       const filteredUser = socketUsers.filter((u) => {
@@ -34,13 +33,15 @@ const Chat = () => {
       });
       setUsers(filteredUser);
       // if no user - default to first in users array
-      if (chatUser._id === "") {
-        setChatUser({ _id: filteredUser[0]._id, name: filteredUser[0].name });
-        // emit message
-        socket.emit("chat-with", {
-          from: _id,
-          to: filteredUser[0]._id,
-        });
+      if (chatUser && chatUser._id === "") {
+        if (filteredUser.length > 0) {
+          setChatUser({ _id: filteredUser[0]._id, name: filteredUser[0].name });
+          // emit message
+          socket.emit("chat-with", {
+            from: _id,
+            to: filteredUser[0]._id,
+          });
+        }
       }
     });
 
