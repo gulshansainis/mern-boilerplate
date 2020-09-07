@@ -14,17 +14,26 @@ const Nav = ({ history }) => {
         {!isAuth() && (
           <>
             <li className="invisible sm:visible">
-              <NavLink className="px-2 py-3" exact={true} to="/signin">
+              <NavLink className="px-2 py-3  mr-3" exact={true} to="/signin">
                 Sign In
               </NavLink>
             </li>
             <li className="invisible sm:visible">
               <NavLink
-                className="px-2 py-3 bg-blue-brand rounded text-white font-bold"
+                className="px-2 py-3 mr-3 bg-blue-brand rounded text-white font-bold"
                 exact={true}
                 to="/signup"
               >
                 Sign Up
+              </NavLink>
+            </li>
+            <li className="invisible sm:visible">
+              <NavLink
+                className="px-2 py-3 bg-teal-700 rounded text-white font-bold"
+                exact={true}
+                to="/organisation/signup"
+              >
+                Organisation Sign Up
               </NavLink>
             </li>
           </>

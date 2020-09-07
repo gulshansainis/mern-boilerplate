@@ -12,6 +12,7 @@ import Reset from "./Reset";
 import EditProfile from "./EditProfile";
 import User from "./User";
 import OrgActivate from "./OrgActivate";
+import OrgSignup from "./OrgSignup";
 
 const Routes = () => {
   return (
@@ -19,6 +20,7 @@ const Routes = () => {
       <Switch>
         <Route path="/" exact component={App} />
         <Route path="/signup" exact component={Signup} />
+        <Route path="/organisation/signup" exact component={OrgSignup} />
         <Route path="/signin" exact component={Signin} />
         <Route path="/auth/activate/:token" exact component={Activate} />
         <Route path="/auth/password/forgot" exact component={Forgot} />
