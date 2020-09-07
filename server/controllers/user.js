@@ -25,6 +25,14 @@ exports.update = (req, res) => {
       });
     }
 
+    // check if account disabled by admin
+    if (user.status !== "active") {
+      return res.status(400).json({
+        error: "Sorry, your account is disabled by admin",
+      });
+    }
+
+    // if no name
     if (!name) {
       return res.status(400).json({
         error: "Name is required",
@@ -33,6 +41,7 @@ exports.update = (req, res) => {
       user.name = name;
     }
 
+    // if org_email is empty
     if (!org_email) {
       return res.status(400).json({
         error: "Organisation email is required",
@@ -42,6 +51,7 @@ exports.update = (req, res) => {
       user.org_email_domain = org_email.split("@")[1];
     }
 
+    // if password length lessa than 6 characters
     if (password) {
       if (password.length < 6) {
         return res.status(400).json({

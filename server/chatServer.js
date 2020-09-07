@@ -8,6 +8,7 @@ exports.start = (app, port) => {
 
   const getUsersByDomain = (domain) => {
     return User.find({ org_email_domain: domain, status: "active" })
+      .select("role status name email org_email org_email_domain")
       .then((users) => users)
       .catch((error) => console.log(error));
   };

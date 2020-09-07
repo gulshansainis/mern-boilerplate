@@ -126,7 +126,7 @@ exports.signin = (req, res) => {
       expiresIn: "7d",
     });
     const { _id, name, email, role, org_email, org_email_domain } = user;
-    console.log({ _id, name, email, role, org_email, org_email_domain });
+
     return res.json({
       token,
       user: { _id, name, email, role, org_email, org_email_domain },
