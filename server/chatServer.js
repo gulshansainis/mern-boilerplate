@@ -20,7 +20,7 @@ exports.start = (app, port) => {
       // console.log(`getting user for domain ${org_email_domain}`);
       // dispatch all users from organnisation
       getUsersByDomain(org_email_domain)
-        .then((users) => socket.emit("users", users))
+        .then((users) => io.to(socket.id).emit("users", users))
         .catch((error) => console.log(error));
     });
 
