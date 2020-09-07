@@ -6,3 +6,16 @@
   filter: blur(4px);
   -webkit-filter: blur(4px);
 }
+
+.chat-container {
+  height: calc(100vh - 84px);
+}
+
+.chat-user {
+  cursor: pointer;
+}
+
+.chat-user.active {
+  background: rgb(75, 75, 75);
+  /* backgrou: 0.7; */
+}

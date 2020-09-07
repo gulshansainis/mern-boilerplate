@@ -154,11 +154,11 @@ exports.signin = (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-    const { _id, name, email, role, org_email } = user;
-
+    const { _id, name, email, role, org_email, org_email_domain } = user;
+    console.log({ _id, name, email, role, org_email, org_email_domain });
     return res.json({
       token,
-      user: { _id, name, email, role, org_email },
+      user: { _id, name, email, role, org_email, org_email_domain },
     });
   });
 };
@@ -312,10 +312,17 @@ exports.googleLogin = (req, res) => {
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
               expiresIn: "7d",
             });
-            const { _id, email, name, role } = user;
+            const {
+              _id,
+              name,
+              email,
+              role,
+              org_email,
+              org_email_domain,
+            } = user;
             return res.json({
               token,
-              user: { _id, email, name, role },
+              user: { _id, name, email, role, org_email, org_email_domain },
             });
           }
           // user not found  in database
@@ -337,10 +344,17 @@ exports.googleLogin = (req, res) => {
                   expiresIn: "7d",
                 }
               );
-              const { _id, email, name, role } = user;
+              const {
+                _id,
+                name,
+                email,
+                role,
+                org_email,
+                org_email_domain,
+              } = user;
               return res.json({
                 token,
-                user: { _id, email, name, role },
+                user: { _id, name, email, role, org_email, org_email_domain },
               });
             });
           }

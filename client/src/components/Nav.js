@@ -36,6 +36,13 @@ const Nav = ({ history }) => {
             </NavLink>
           </li>
         )}
+        {isAuth() && isAuth().role === "subscriber" && (
+          <li>
+            <NavLink className="px-2 py-3" exact={true} to="/user">
+              User
+            </NavLink>
+          </li>
+        )}
         {isAuth() && (
           <li>
             <NavLink className="px-2 py-3" exact={true} to="/edit/profile">
@@ -47,7 +54,7 @@ const Nav = ({ history }) => {
           <li>
             <a
               className="px-2 py-3 bg-blue-brand rounded text-white font-bold"
-              href="#"
+              href="/"
               onClick={() => {
                 signout((e) => {
                   console.log("Signout success");

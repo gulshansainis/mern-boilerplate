@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { isAuth, getCookie, signout, updateUser } from "../utility/helpers";
+import { isAuth, getCookie, signout } from "../utility/helpers";
 import FormContainer from "./FormContainer";
 
 const Admin = ({ history }) => {
@@ -55,10 +55,16 @@ const Admin = ({ history }) => {
   return (
     <Layout>
       <ToastContainer />
-      {/* <FormContainer> */}
-      <h1 className="text-center text-3xl">ADMIN AREA</h1>
-      <pre>{JSON.stringify(values, null, 2)}</pre>
-      {/* </FormContainer> */}
+      <FormContainer>
+        <h1 className="text-center text-3xl">ADMIN AREA</h1>
+        <pre>
+          {JSON.stringify(
+            { role, name, email, org_email, password, buttonText },
+            null,
+            2
+          )}
+        </pre>
+      </FormContainer>
     </Layout>
   );
 };

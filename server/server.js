@@ -3,10 +3,14 @@ const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const chatServer = require("./chatServer");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 8000;
+const chatPort = process.env.CHAT_PORT || 8001;
+// start chat server
+chatServer.start(app, chatPort);
 
 // connect to database
 mongoose
@@ -23,6 +27,10 @@ mongoose
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
+
+app.get("/", (req, res) => {
+  res.send({ message: "Connected" });
+});
 
 // routes
 app.use("/api", require("./routes"));

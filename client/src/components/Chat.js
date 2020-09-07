@@ -1,15 +1,109 @@
-import React from "react";
-import Nav from "./Nav";
+import React, { useState, useEffect } from "react";
+import socketIOClient from "socket.io-client";
+import { isAuth } from "../utility/helpers";
+const ENDPOINT = "http://127.0.0.1:8001";
+const socket = socketIOClient(ENDPOINT);
 
-const Chat = ({ children }) => {
+const Chat = () => {
+  const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState({
+    _id: "",
+    name: "",
+    org_email_domain: "",
+  });
+
+  const [chatUser, setChatUser] = useState({ _id: "", name: "" });
+  const [message, setMessage] = useState("");
+  const [conversation, setConversation] = useState([]);
+
+  useEffect(() => {
+    const { _id, name, org_email_domain } = isAuth();
+    setCurrentUser({ _id, name, org_email_domain });
+
+    // send current user
+    socket.emit("user", { _id, org_email_domain });
+
+    // listen for users from server
+    socket.on("users", (socketUsers) => {
+      // filter current user
+      const filteredUser = socketUsers.filter((u) => {
+        return u._id !== _id;
+      });
+      setUsers(filteredUser);
+      // if no user - default to first in users array
+      if (chatUser._id === "") {
+        setChatUser({ _id: filteredUser[0]._id, name: filteredUser[0].name });
+        // emit message
+        socket.emit("chat-with", {
+          from: _id,
+          to: filteredUser[0]._id,
+        });
+      }
+    });
+
+    // listen for new messages
+    socket.on("chat-history", (history) => {
+      // console.log(history);
+      setConversation(history);
+    });
+
+    // listen for new messages
+    socket.on("new-message", (newMessage) => {
+      setConversation(newMessage);
+    });
+
+    return () => socket.disconnect();
+  }, []);
+
+  /**
+   * Handle click on user chat head
+   * @param {*} event
+   */
+  const handleUserClick = (event) => {
+    let selectedUser = event.currentTarget.id;
+    let selectedUserName = event.currentTarget.textContent;
+    // console.log(selectedUserName);
+    if (selectedUser === currentUser._id || chatUser._id === selectedUser) {
+      return;
+    }
+    setChatUser({ _id: selectedUser, name: selectedUserName });
+    // emit message
+    socket.emit("chat-with", {
+      from: currentUser._id,
+      to: selectedUser,
+    });
+    setConversation([]);
+  };
+
+  const handleChatInput = (event) => {
+    let chatMessage = event.target.value;
+    setMessage(chatMessage);
+  };
+
+  const handleChatSubmit = (event) => {
+    event.preventDefault();
+    // return if no message
+    if (!message) return;
+
+    // emit message
+    socket.emit("chat-message", {
+      from: currentUser._id,
+      to: chatUser._id,
+      message,
+    });
+    // clear input
+    setMessage("");
+  };
+
   return (
-    <div className="font-sans antialiased h-screen flex border-t-2">
+    <div className="chat-container font-sans antialiased h-screen flex border-t-2">
       <div className="bg-indigo-400 text-purple-lighter flex-none w-64 pb-6 hidden md:block">
         <div className="text-white mb-2 mt-3 px-4 flex justify-between">
           <div className="flex-auto">
             <h1 className="font-semibold text-xl leading-tight mb-1 truncate">
-              Tailwind CSS
+              {currentUser.org_email_domain}
             </h1>
+
             <div className="flex items-center mb-6">
               <svg
                 className="h-2 w-2 fill-current text-green-600 mr-2"
@@ -17,7 +111,9 @@ const Chat = ({ children }) => {
               >
                 <circle cx="10" cy="10" r="10" />
               </svg>
-              <span className="text-white opacity-50 text-sm">Adam Wathan</span>
+              <span className="text-white opacity-50 text-sm">
+                {currentUser.name}
+              </span>
             </div>
           </div>
           <div>
@@ -32,21 +128,7 @@ const Chat = ({ children }) => {
             </svg>
           </div>
         </div>
-        {/* <div className="mb-8">
-          <div className="px-4 mb-2 text-white flex justify-between items-center">
-            <div className="opacity-75">Channels</div>
-            <div>
-              <svg
-                className="fill-current h-4 w-4 opacity-50"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-              </svg>
-            </div>
-          </div>
-          <div className="bg-teal-dark py-1 px-4 text-white"># general</div>
-        </div> */}
+        {/* user available for chat */}
         <div className="mb-8">
           <div className="px-4 mb-2 text-white flex justify-between items-center">
             <div className="opacity-75">Direct Messages</div>
@@ -60,56 +142,41 @@ const Chat = ({ children }) => {
               </svg>
             </div>
           </div>
-          <div className="flex items-center mb-3 px-4">
-            <svg
-              className="h-2 w-2 fill-current text-green-600 mr-2"
-              viewBox="0 0 20 20"
-            >
-              <circle cx="10" cy="10" r="10" />
-            </svg>
-            <span className="text-white opacity-75">
-              Adam Wathan <span className="text-grey text-sm">(you)</span>
-            </span>
-          </div>
-          <div className="flex items-center mb-3 px-4">
-            <svg
-              className="h-2 w-2 fill-current text-green-600 mr-2"
-              viewBox="0 0 20 20"
-            >
-              <circle cx="10" cy="10" r="10" />
-            </svg>
-            <span className="text-white opacity-75">David Hemphill</span>
-          </div>
-          <div className="flex items-center px-4 mb-6 opacity-50">
-            <svg
-              className="h-2 w-2 stroke-current text-white mr-2"
-              viewBox="0 0 22 22"
-            >
-              <circle cx="11" cy="11" r="9" fill="none" strokeWidth="3" />
-            </svg>
-            <span className="text-white">Steve Schoger</span>
-          </div>
-        </div>
-        <div>
-          <div className="px-4 mb-2 text-white flex justify-between items-center">
-            <div className="opacity-75">Apps</div>
-            <div>
-              <svg
-                className="fill-current h-4 w-4 opacity-50"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+          {users.map((user) => {
+            return (
+              <div
+                key={user._id}
+                id={user._id}
+                className={`chat-user flex items-center px-2 h-12 ${
+                  chatUser._id === user._id ? "active" : ""
+                }`}
+                onClick={handleUserClick}
               >
-                <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-              </svg>
-            </div>
-          </div>
+                <svg
+                  className="h-2 w-2 fill-current text-green-600 mr-2"
+                  viewBox="0 0 20 20"
+                >
+                  <circle cx="10" cy="10" r="10" />
+                </svg>
+                <span className="text-white opacity-75">
+                  {user.name}
+                  {user.name === currentUser.name && (
+                    <span className="text-grey text-sm">(you)</span>
+                  )}
+                </span>
+              </div>
+            );
+          })}
         </div>
+        {/* ./ends - user available for chat */}
       </div>
 
       <div className="flex-1 flex flex-col bg-white overflow-hidden">
         <div className="border-b flex px-6 py-2 items-center flex-none">
           <div className="flex flex-col">
-            <h3 className="text-grey-darkest mb-1 font-extrabold">#general</h3>
+            <h3 className="text-grey-darkest mb-1 font-extrabold">
+              #{chatUser.name}
+            </h3>
             <div className="text-grey-dark text-sm truncate">
               Chit-chattin' about ugly HTML and mixing of concerns.
             </div>
@@ -135,366 +202,34 @@ const Chat = ({ children }) => {
         </div>
 
         <div className="px-6 py-4 flex-1 overflow-y-scroll">
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1012717264108318722/9lP-d2yM_200x200.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Steve Schoger</span>
-                <span className="text-grey text-xs">11:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                The slack from the other side.
-              </p>
-            </div>
-          </div>
+          {/* chat messages */}
 
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Adam Wathan</span>
-                <span className="text-grey text-xs">12:45</span>
+          {conversation.map((chat, index) => {
+            return (
+              <div key={index} className="flex items-start mb-4 text-sm">
+                <img
+                  src="https://pbs.twimg.com/profile_images/1012717264108318722/9lP-d2yM_200x200.jpg"
+                  className="w-10 h-10 rounded mr-3"
+                />
+                <div className="flex-1 overflow-hidden">
+                  <div>
+                    <span className="font-bold">
+                      {chat.from === currentUser._id
+                        ? currentUser.name
+                        : chatUser.name}
+                    </span>{" "}
+                    <span className="text-grey text-xs">{chat.createdAt}</span>
+                  </div>
+                  <p className="text-black leading-normal">{chat.message}</p>
+                </div>
               </div>
-              <p className="text-black leading-normal">
-                How are we supposed to control the marquee space without an
-                utility for it? I propose this:
-              </p>
-              <div className="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">
-                ....
-              </div>
-            </div>
-          </div>
+            );
+          })}
 
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">David Hemphill</span>
-                <span className="text-grey text-xs">12:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                <a
-                  href="#"
-                  className="inline-block bg-blue-lightest text-blue no-underline"
-                >
-                  @Adam Wathan
-                </a>{" "}
-                the size of the generated CSS is creating a singularity in
-                space/time, we must stop adding more utilities before it's too
-                late!
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Steve Schoger</span>
-                <span className="text-grey text-xs">11:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                The slack from the other side.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Adam Wathan</span>
-                <span className="text-grey text-xs">12:45</span>
-              </div>
-              <p className="text-black leading-normal">
-                How are we supposed to control the marquee space without an
-                utility for it? I propose this:
-              </p>
-              <div className="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">
-                .marquee-lightspeed
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">David Hemphill</span>
-                <span className="text-grey text-xs">12:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                <a
-                  href="#"
-                  className="inline-block bg-blue-lightest text-blue no-underline"
-                >
-                  @Adam Wathan
-                </a>{" "}
-                the size of the generated CSS is creating a singularity in
-                space/time, we must stop adding more utilities before it's too
-                late!
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Steve Schoger</span>
-                <span className="text-grey text-xs">11:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                The slack from the other side.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Adam Wathan</span>
-                <span className="text-grey text-xs">12:45</span>
-              </div>
-              <p className="text-black leading-normal">
-                How are we supposed to control the marquee space without an
-                utility for it? I propose this:
-              </p>
-              <div className="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">
-                .marquee-lightspeed
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">David Hemphill</span>
-                <span className="text-grey text-xs">12:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                <a
-                  href="#"
-                  className="inline-block bg-blue-lightest text-blue no-underline"
-                >
-                  @Adam Wathan
-                </a>{" "}
-                the size of the generated CSS is creating a singularity in
-                space/time, we must stop adding more utilities before it's too
-                late!
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Steve Schoger</span>
-                <span className="text-grey text-xs">11:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                The slack from the other side.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Adam Wathan</span>
-                <span className="text-grey text-xs">12:45</span>
-              </div>
-              <p className="text-black leading-normal">
-                How are we supposed to control the marquee space without an
-                utility for it? I propose this:
-              </p>
-              <div className="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">
-                .marquee-lightspeed{" "}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">David Hemphill</span>
-                <span className="text-grey text-xs">12:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                <a
-                  href="#"
-                  className="inline-block bg-blue-lightest text-blue no-underline"
-                >
-                  @Adam Wathan
-                </a>{" "}
-                the size of the generated CSS is creating a singularity in
-                space/time, we must stop adding more utilities before it's too
-                late!
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Steve Schoger</span>
-                <span className="text-grey text-xs">11:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                The slack from the other side.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Adam Wathan</span>
-                <span className="text-grey text-xs">12:45</span>
-              </div>
-              <p className="text-black leading-normal">
-                How are we supposed to control the marquee space without an
-                utility for it? I propose this:
-              </p>
-              <div className="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">
-                .marquee-lightspeed{" "}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">David Hemphill</span>
-                <span className="text-grey text-xs">12:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                <a
-                  href="#"
-                  className="inline-block bg-blue-lightest text-blue no-underline"
-                >
-                  @Adam Wathan
-                </a>{" "}
-                the size of the generated CSS is creating a singularity in
-                space/time, we must stop adding more utilities before it's too
-                late!
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://pbs.twimg.com/profile_images/1156611606500917249/6cxzAPbD_400x400.jpg"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Steve Schoger</span>
-                <span className="text-grey text-xs">11:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                The slack from the other side.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://twitter.com/adamwathan/photo"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">Adam Wathan</span>
-                <span className="text-grey text-xs">12:45</span>
-              </div>
-              <p className="text-black leading-normal">
-                How are we supposed to control the marquee space without an
-                utility for it? I propose this:
-              </p>
-              <div className="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">
-                .marquee-lightspeed
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4 text-sm">
-            <img
-              src="https://twitter.com/davidhemphill/photo"
-              className="w-10 h-10 rounded mr-3"
-            />
-            <div className="flex-1 overflow-hidden">
-              <div>
-                <span className="font-bold">David Hemphill</span>
-                <span className="text-grey text-xs">12:46</span>
-              </div>
-              <p className="text-black leading-normal">
-                <a
-                  href="#"
-                  className="inline-block bg-blue-lightest text-blue no-underline"
-                >
-                  @Adam Wathan
-                </a>{" "}
-                the size of the generated CSS is creating a singularity in
-                space/time, we must stop adding more utilities before it's too
-                late!
-              </p>
-            </div>
-          </div>
+          {/* end chat messages */}
         </div>
+
+        {/* chat input */}
         <div className="pb-6 px-4 flex-none">
           <div className="flex rounded-lg border-2 border-grey overflow-hidden">
             <span className="text-3xl text-grey border-r-2 border-grey p-2">
@@ -506,11 +241,15 @@ const Chat = ({ children }) => {
                 <path d="M16 10c0 .553-.048 1-.601 1H11v4.399c0 .552-.447.601-1 .601-.553 0-1-.049-1-.601V11H4.601C4.049 11 4 10.553 4 10c0-.553.049-1 .601-1H9V4.601C9 4.048 9.447 4 10 4c.553 0 1 .048 1 .601V9h4.399c.553 0 .601.447.601 1z" />
               </svg>
             </span>
-            <input
-              type="text"
-              className="w-full px-4"
-              placeholder="Message #general"
-            />
+            <form className="w-full p-2" onSubmit={handleChatSubmit}>
+              <input
+                type="text"
+                className="w-full px-4 h-8 outline-none"
+                placeholder="Type your message"
+                value={message}
+                onChange={handleChatInput}
+              />
+            </form>
           </div>
         </div>
       </div>

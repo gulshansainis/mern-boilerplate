@@ -30,11 +30,26 @@ const Signin = ({ history }) => {
 
   const handleGoogleLogin = (response) => {
     authenticate(response, () => {
-      isAuth() && isAuth().role === "admin"
-        ? history.push("/admin")
-        : history.push("/");
+      const { org_email_domain, role, _id } = isAuth();
+      redirectUserAfterLogin(_id, role, history, org_email_domain);
     });
   };
+
+  function redirectUserAfterLogin(_id, role, history, org_email_domain) {
+    if (_id) {
+      if (role === "admin") {
+        // redirect to admin page
+        history.push("/admin");
+      } else if (role === "subscriber" && org_email_domain) {
+        // redirect to admin page
+        history.push("/");
+      } else if (role === "subscriber" && !org_email_domain) {
+        history.push("/edit/profile");
+      }
+    } else {
+      history.push("/");
+    }
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -54,9 +69,8 @@ const Signin = ({ history }) => {
             buttonText: "Submitted",
           });
           toast.success(`Welcome ${response.data.user.name}`);
-          isAuth() && isAuth().role === "admin"
-            ? history.push("/admin")
-            : history.push("/");
+          const { org_email_domain, role, _id } = isAuth();
+          redirectUserAfterLogin(_id, role, history, org_email_domain);
         });
       })
       .catch((error) => {
@@ -84,7 +98,7 @@ const Signin = ({ history }) => {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="name"
             >
-              Email
+              Email <span class="text-red-400">*</span>
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -95,6 +109,7 @@ const Signin = ({ history }) => {
               placeholder="Email"
               value={email}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="mb-6">
@@ -102,7 +117,7 @@ const Signin = ({ history }) => {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
             >
-              Password
+              Password <span class="text-red-400">*</span>
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -113,6 +128,7 @@ const Signin = ({ history }) => {
               placeholder="******************"
               value={password}
               onChange={handleChange}
+              required
             />
             {/* <p className="text-red-500 text-xs italic">
             Please choose a password.
