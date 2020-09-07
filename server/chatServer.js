@@ -7,7 +7,7 @@ exports.start = (app, port) => {
   const connectedSockets = {};
 
   const getUsersByDomain = (domain) => {
-    return User.find({ org_email_domain: domain })
+    return User.find({ org_email_domain: domain, status: "active" })
       .then((users) => users)
       .catch((error) => console.log(error));
   };
