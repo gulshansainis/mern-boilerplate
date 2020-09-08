@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { startChatServer, stopChatServer } = require("./chatServer");
+const { populateDB } = require("./data/seed");
 require("dotenv").config();
 
 const app = express();
@@ -22,6 +23,9 @@ mongoose
   })
   .then(() => console.log("database connected"))
   .catch((error) => console.log(error));
+
+// seed database
+populateDB();
 
 // middlewares
 app.use(morgan("dev"));

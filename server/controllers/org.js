@@ -1,3 +1,8 @@
+/**
+ * File: controllers/org.js
+ *
+ * Controller to handle read, update and manage organisation data including users
+ */
 const Org = require("../models/Org");
 const jwt = require("jsonwebtoken");
 const mail = require("@sendgrid/mail");

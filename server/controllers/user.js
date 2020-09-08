@@ -1,3 +1,8 @@
+/**
+ * File: controllers/user.js
+ *
+ * Controller to handle reading and updating of user data
+ */
 const User = require("../models/User");
 const Org = require("../models/Org");
 

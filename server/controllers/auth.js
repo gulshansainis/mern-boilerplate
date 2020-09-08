@@ -1,3 +1,8 @@
+/**
+ * File: controllers/auth.js
+ *
+ * Controller to handle authentication and authorisation
+ */
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const mail = require("@sendgrid/mail");
