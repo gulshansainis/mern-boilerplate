@@ -6,7 +6,7 @@ improved in subsequent releases.
 
 ### Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/YSR7g-7O_fg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://www.youtube.com/embed/YSR7g-7O_fg
 
 ### Features
 
@@ -18,6 +18,7 @@ improved in subsequent releases.
 [x] UI: Forgot password
 [x] UI: Reset password
 [x] UI: One to one chat interface for user with inn organisation
+[x] Mail: integration with sendgrid
 [x] Mail: Sent on Organisation up
 [x] Mail: Sent on User Sign up
 [x] Mail: Sent on Forgot password
@@ -52,6 +53,7 @@ improved in subsequent releases.
 [ ] Move chat server as separate service
 [ ] Remove user data on being removed from organisation
 [ ] Remove user and their data on removing organisation
+[ ] Dockerize app to run frontend and backend in containers
 
 ### UI Flow
 
