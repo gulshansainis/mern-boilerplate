@@ -10,6 +10,7 @@ https://www.youtube.com/embed/YSR7g-7O_fg
 
 ### Features
 
+[x] UI: Built using tailwind
 [x] UI: Organisation Sign Up
 [x] UI: User Sign Up/ Sign In using Google OAuth
 [x] UI: User Sign Up and Sign In Form
